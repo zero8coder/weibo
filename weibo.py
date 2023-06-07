@@ -39,40 +39,44 @@ def addArticles(url, json_data):
     except requests.exceptions.RequestException as e:
         raise Exception("其他请求错误：{}".format(e))
 
+# 获取微博数据并整理    
+def getWeiBoDatas(sou):
+    datas = []
+    count = 0
+    # print(sou)
+    for x in sou:
+        count+=1
+        td1 = x.find('td', class_='td-01')
+        if td1 is not None:
+        
+            if td1.text.isdigit():
+                td2 = x.find('td', class_='td-02')
+                if td2 is not None:
+                    a_tag = td2.find('a')
+                    if a_tag is not None:
+                        print(a_tag.get('href'), a_tag.text)
+                        data = {
+                            'no': td1.text,
+                            'title': a_tag.string,
+                            'url': a_tag.get('href'),
+                            'source': 1
+                        }
+                        datas.append(data)
+    return datas                    
+
 html = getHTMLText(url)
-# print(html)
 soup = BeautifulSoup(html, 'html.parser')
-# sou = soup.find_all("td", class_='td-02')
 sou = soup.find_all("tr") 
-datas = []
-count = 0
-# print(sou)
-for x in sou:
-    count+=1
-    td1 = x.find('td', class_='td-01')
-    if td1 is not None:
-    
-        if td1.text.isdigit():
-            td2 = x.find('td', class_='td-02')
-            if td2 is not None:
-                a_tag = td2.find('a')
-                if a_tag is not None:
-                    print(a_tag.get('href'), a_tag.text)
-                    data = {
-                        'no': td1.text,
-                        'title': a_tag.string,
-                        'url': a_tag.get('href'),
-                        'source': 1
-                    }
-                    datas.append(data)
+datas = getWeiBoDatas(sou)
 postdata = {'data':datas}
 json_data = json.dumps(postdata)
+
 try:
     r = addArticles(write_url, json_data);
 except Exception as  e:
     print("网络请求异常：{}".format(e))
-# df = pd.DataFrame(datas)
-# df.columns = ['热搜标题']
-# df.to_csv('data.csv', encoding='utf_8_sig')
+df = pd.DataFrame(datas)
+df.columns = ['热搜标题']
+df.to_csv('data.csv', encoding='utf_8_sig')
 
  
