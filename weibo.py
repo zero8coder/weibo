@@ -5,7 +5,7 @@ import bs4
 import json
 host = 'https://s.weibo.com'
 url = host + '/top/summary?cate=realtimehot'
-write_url = 'http://news.test/api/articles'
+write_url = 'http://127.0.0.1/api/articles'
 
 def getHTMLText(url):
     try:
