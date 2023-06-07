@@ -75,8 +75,5 @@ try:
     r = addArticles(write_url, json_data);
 except Exception as  e:
     print("网络请求异常：{}".format(e))
-df = pd.DataFrame(datas)
-df.columns = ['热搜标题']
-df.to_csv('data.csv', encoding='utf_8_sig')
 
  
